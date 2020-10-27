@@ -13,7 +13,7 @@ class ThreeJSContainer {
     private cube: THREE.Mesh;
     private light: THREE.Light;
     private torus: THREE.Mesh;
-    private uniforms: THREE.Uniform[];
+    private uniforms: {[key: string]: any};
 
     constructor() {
         this.createScene();
@@ -55,7 +55,6 @@ class ThreeJSContainer {
         // requireにより，サーバーサイド読み込み
         const vert = require("./vertex.vs").default;
         const frag = require("./fragment.fs").default;
-
         this.uniforms = [];
         this.material = new THREE.ShaderMaterial({
             uniforms: this.uniforms,
