@@ -14,6 +14,7 @@ class ThreeJSContainer {
     private light: THREE.Light;
     private torus: THREE.Mesh;
     private uniforms: {[key: string]: THREE.IUniform};
+    private clock: THREE.Clock;
 
     constructor() {
         this.createScene();
@@ -48,6 +49,7 @@ class ThreeJSContainer {
 
     // シーンの作成(全体で1回)
     private createScene = () => {
+        this.clock = new THREE.Clock();
         this.scene = new THREE.Scene();
 
         this.geometry = new THREE.TorusGeometry(2, 0.5, 16, 100);
