@@ -1,9 +1,9 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import * as dat from "dat.gui";
-import * as Stats from "stats.js";
-import * as TWEEN from "@tweenjs/tween.js";
 import * as Physijs from "physijs-webpack";
+import Stats from "stats.js";
+import TWEEN from "@tweenjs/tween.js";
 
 
 class ThreeJSContainer {
@@ -13,8 +13,6 @@ class ThreeJSContainer {
     private cube: THREE.Mesh;
     private light: THREE.Light;
     private torus: THREE.Mesh;
-    private uniforms: {[key: string]: THREE.IUniform};
-    private clock: THREE.Clock;
 
     constructor() {
         this.createScene();
@@ -22,25 +20,26 @@ class ThreeJSContainer {
 
     // 画面部分の作成(表示する枠ごとに)
     public createRendererDOM = (width: number, height: number, cameraPos: THREE.Vector3) => {
-        const renderer = new THREE.WebGLRenderer();
+        let renderer = new THREE.WebGLRenderer();
         renderer.setSize(width, height);
         renderer.setClearColor(new THREE.Color(0x495ed));
 
-        const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+        //カメラの設定
+        let camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
         camera.position.copy(cameraPos);
-        camera.lookAt(new THREE.Vector3(0, 0, 0));
+        camera.lookAt(new THREE.Vector3(0,0,0));
 
-        const orbitControls = new OrbitControls(camera, renderer.domElement);
+        let orbitControls = new OrbitControls(camera, renderer.domElement);
 
         // 毎フレームのupdateを呼んで，render
-        // reqest... により次フレームを呼ぶ
-        const render = () => {
+        // reqestAnimationFrame により次フレームを呼ぶ
+        let render: FrameRequestCallback = (time) => {
             orbitControls.update();
 
             renderer.render(this.scene, camera);
             requestAnimationFrame(render);
         }
-        render();
+        requestAnimationFrame(render);
 
         renderer.domElement.style.cssFloat = "left";
         renderer.domElement.style.margin = "10px";
@@ -49,41 +48,48 @@ class ThreeJSContainer {
 
     // シーンの作成(全体で1回)
     private createScene = () => {
-        this.clock = new THREE.Clock();
         this.scene = new THREE.Scene();
 
         this.geometry = new THREE.TorusGeometry(2, 0.5, 16, 100);
 
         // requireにより，サーバーサイド読み込み
-        const vert = require("./vertex.vs").default;
-        const frag = require("./fragment.fs").default;
-        this.uniforms = {};
+        let vert = require("./vertex.vs").default;
+        let frag = require("./fragment.fs").default;
+
+        let uniforms = {
+            time: {
+                value: 0,
+            }
+        }
+
         this.material = new THREE.ShaderMaterial({
-            uniforms: this.uniforms,
+            uniforms: uniforms,
             vertexShader: vert,
             fragmentShader: frag,
         });
 
         this.torus = new THREE.Mesh(this.geometry, this.material);
         this.scene.add(this.torus);
+
+        //ライトの設定
         this.light = new THREE.DirectionalLight(0xffffff);
-        var lvec = new THREE.Vector3(1, 1, 1).normalize();
+        let lvec = new THREE.Vector3(1, 1, 1).normalize();
         this.light.position.set(lvec.x, lvec.y, lvec.z);
         this.scene.add(this.light);
 
 
         // 毎フレームのupdateを呼んで，更新
-        // reqest... により次フレームを呼ぶ
-        const update = () => {
-            this.torus.rotateX(0.01);
+        // reqestAnimationFrame により次フレームを呼ぶ
+        let update: FrameRequestCallback = (time) => {
+            uniforms.time.value = time / 1000;
 
             requestAnimationFrame(update);
         }
-        update();
+        requestAnimationFrame(update);
     }
 }
 
-const container = new ThreeJSContainer();
+let container = new ThreeJSContainer();
 
-const viewport = container.createRendererDOM(640, 480, new THREE.Vector3(3, 3, 3));
+let viewport = container.createRendererDOM(640, 480, new THREE.Vector3(3, 3, 3));
 document.body.appendChild(viewport);
