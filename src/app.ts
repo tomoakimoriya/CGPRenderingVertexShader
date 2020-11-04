@@ -59,7 +59,7 @@ class ThreeJSContainer {
         let uniforms = {
             time: {
                 value: 0,
-            }
+            },
         }
 
         this.material = new THREE.ShaderMaterial({
