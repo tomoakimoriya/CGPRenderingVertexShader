@@ -1,14 +1,9 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import * as dat from "dat.gui";
-import * as Physijs from "physijs-webpack";
-import Stats from "stats.js";
-import TWEEN from "@tweenjs/tween.js";
-
 
 class ThreeJSContainer {
     private scene: THREE.Scene;
-    private geometry: THREE.Geometry;
+    private geometry: THREE.BufferGeometry;
     private material: THREE.Material;
     private cube: THREE.Mesh;
     private light: THREE.Light;
