@@ -21,7 +21,7 @@
   "homepage": "https://github.com/tomoakimoriya/CGPRendering#readme",
   "dependencies": {
     "@types/three": "^0.133.0",
-    "three": "^0.133.1"
+    "three": "^0.137.0"
   },
   "devDependencies": {
     "@types/webpack": "^4.41.22",
