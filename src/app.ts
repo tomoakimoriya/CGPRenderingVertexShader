@@ -63,6 +63,7 @@ class ThreeJSContainer {
             uniforms: uniforms,
             vertexShader: vert,
             fragmentShader: frag,
+            wireframe: true
         });
 
         this.torus = new THREE.Mesh(this.geometry, this.material);
